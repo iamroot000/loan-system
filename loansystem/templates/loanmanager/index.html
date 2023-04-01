@@ -9,6 +9,8 @@
 <link rel="stylesheet" href="/static/adminlte/plugins/toastr/toastr.min.css">
 <link rel="stylesheet" href="/static/adminlte/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
 <link rel="stylesheet" href="/static/css/loanmanager/style.css">
+
+
 {% endblock %}
 {% block content %}
 <div class="card">
@@ -190,49 +192,24 @@
               </div>
           </div>
           <div class="col-md-2">
-            <div class="form-group">
-              <div class="form-check">
-                <label class="form-check-label">
-                  <input type="checkbox" class="form-check-input" name="optionsRadios" id="optionsRadios1" value="">
-                  Default
-                </label>
-              </div>
-              <div class="form-check">
-                <label class="form-check-label">
-                  <input type="checkbox" class="form-check-input" name="optionsRadios" id="optionsRadios1" value="">
-                  Default
-                </label>
-              </div>
+            <div class="form-group" id="payment_col_1">
             </div>
           </div>
           <div class="col-md-2">
-            <div class="form-group">
-              <div class="form-check">
-                <label class="form-check-label">
-                  <input type="checkbox" class="form-check-input" name="optionsRadios" id="optionsRadios1" value="">
-                  Default
-                </label>
-              </div>
+            <div class="form-group" id="payment_col_2">
             </div>
           </div>
           <div class="col-md-2">
-            <div class="form-group">
-              <div class="form-check">
-                <label class="form-check-label">
-                  <input type="checkbox" class="form-check-input" name="optionsRadios" id="optionsRadios1" value="">
-                  Default
-                </label>
-              </div>
+            <div class="form-group" id="payment_col_3">
             </div>
           </div>
         </div>
-        <div class="row">
-          
-        </div>
+        {% comment %} <div class="row">
+        </div> {% endcomment %}
       </div>
       <div class="modal-footer justify-content-between">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-success btn-fw">Update</button>
+        <button type="button" class="btn btn-success btn-fw" id="updatePayment">Update</button>
       </div>
     </div>
   </div>
@@ -437,6 +414,16 @@
   });
 </script>
 <script>
+  {% comment %} const const_payment_col_1 = document.getElementById("payment_col_1");
+  for (let i = 1; i < 13; i++) {
+    const_payment_col_1.innerHTML +=
+      "<div class='form-check'>"+
+      "<label class='form-check-label'>"+
+      "<input type='  checkbox' class='form-check-input' name='optionsRadios' id='optionsRadios"+i+"' value=''>"+
+      "</input>"+
+      "</label>"+
+      "</div>"
+  } {% endcomment %}
   
 </script>
 {% endblock %}

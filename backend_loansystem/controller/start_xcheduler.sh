@@ -3,9 +3,11 @@ parent_path=$( cd "$(dirname "${BASH_SOURCE}")" ; pwd -P )
 cd "$parent_path"
 
 
-printlogfile="logs/xcheduler.log"
+printlogfile="logs/xcheduler.out"
 
-nohup ../backend-env/bin/python3 xcheduler.py $printlogfile 2>>$printlogfile &
+echo $parent_path
+
+# nohup backend-env/bin/python3 exec_xcheduler.py $printlogfile 2>>$printlogfile &
 
 
 echo "stdout is at $printlogfile"

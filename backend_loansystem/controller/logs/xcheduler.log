@@ -1,3 +1,9 @@
 2023-03-24 09:26:15,582 - INFO - [(16, 207419, 'daily', 'Elwin', True, 2000, 27, datetime.date(2023, 3, 23), datetime.date(2023, 4, 19), 0, 27, 80, 0, 2200, 0, 'incomplete', 160, 0, 40, True), (15, 692492, 'daily', 'rei', True, 1000, 27, datetime.date(2023, 3, 22), datetime.date(2023, 4, 18), 0, 19, 40, 100, 1100, 0, 'incomplete', 80, 0, 20, True)]
 2023-03-24 09:27:18,553 - INFO - [(16, 207419, 'daily', 'Elwin', True, 2000, 27, datetime.date(2023, 3, 23), datetime.date(2023, 4, 19), 0, 27, 80, 0, 2200, 0, 'incomplete', 160, 0, 40, True), (15, 692492, 'daily', 'rei', True, 1000, 27, datetime.date(2023, 3, 22), datetime.date(2023, 4, 18), 0, 19, 40, 100, 1100, 0, 'incomplete', 80, 0, 20, True)]
 2023-03-24 10:19:33,904 - INFO - [(16, 207419, 'daily', 'Elwin', True, 2000, 27, datetime.date(2023, 3, 23), datetime.date(2023, 4, 19), 0, 27, 80, 0, 2200, 0, 'incomplete', 160, 0, 40, True), (15, 692492, 'daily', 'rei', True, 1000, 27, datetime.date(2023, 3, 22), datetime.date(2023, 4, 18), 0, 19, 40, 100, 1100, 0, 'incomplete', 80, 0, 20, True)]
+2023-03-24 22:12:28,606 - INFO - days_left field for loan_id=%s successfully updated
+2023-03-24 22:12:28,613 - INFO - days_left field for loan_id=%s successfully updated
+2023-03-25 09:12:15,502 - INFO - days_left field for loan_id=%s successfully updated to %s
+2023-03-25 09:12:15,513 - INFO - days_left field for loan_id=%s successfully updated to %s
+2023-03-25 09:14:49,171 - INFO - Successfully updated days_left field for loan_id=207419 to 24.
+2023-03-25 09:14:49,178 - INFO - Successfully updated days_left field for loan_id=692492 to 23.

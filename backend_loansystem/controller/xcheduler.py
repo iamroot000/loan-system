@@ -1,17 +1,24 @@
-from dao.loansystemdaoimpl import DBController
+from .dao.loansystemdaoimpl import DBController
 import logging
 import datetime
 import os
 
+#add checking of directory for logs
 class DXcheduler():
 
     def __init__(self):
         self.__controll = DBController()
     
     def update(self):
-        self._logger("INFO", self.__controll.get_all_data())
         for data in self.__controll.get_all_data():
-            print(data[8])
+            due_date = data[8]
+            loan_id = data[1]
+            date_now = datetime.datetime.now()
+            due_datetime = datetime.datetime.combine(due_date, datetime.time.min)
+            days = (due_datetime - date_now).days
+            if not (self.__controll.update_days_left(loan_id, days)):
+                self._logger("ERROR", f'Failed to Update days_left field for loan_id={loan_id} please check!')
+            self._logger("INFO", f'Successfully updated days_left field for loan_id={loan_id} to {days}.')
         return True
 
     def _logger(self, level, message):

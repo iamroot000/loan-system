@@ -1,0 +1,16 @@
+appending output to nohup.out
+nohup: ../backend-env/bin/python3: No such file or directory
+appending output to nohup.out
+nohup: ../backend-env/bin/python3: No such file or directory
+appending output to nohup.out
+nohup: ../backend-env/bin/python3: No such file or directory
+appending output to nohup.out
+nohup: /backend-env/bin/python3: No such file or directory
+appending output to nohup.out
+/Library/Frameworks/Python.framework/Versions/3.11/Resources/Python.app/Contents/MacOS/Python: can't open file '/Users/nikkoreiaratan/workspace-rei/django-workspace/test-project/backend_loansystem/xcheduler.py': [Errno 2] No such file or directory
+appending output to nohup.out
+appending output to nohup.out
+2023-03-26 00:00:12,931 - INFO - Successfully updated days_left field for loan_id=207419 to 23.
+2023-03-26 00:00:12,942 - INFO - Successfully updated days_left field for loan_id=692492 to 22.
+2023-03-26 00:00:12,952 - INFO - Successfully updated days_left field for loan_id=437082 to 34.
+appending output to nohup.out

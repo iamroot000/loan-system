@@ -23,21 +23,14 @@ class borrower_table(models.Model):
      
 class loan_table(models.Model):
 
-
     LOAN_TYPES = [
         ('monthly', 'Monthly'),
         ('daily', 'Daily'),
     ]
 
-    # def get_borrower_choices():
-    #     borrowers = borrowers = borrower_table.objects.all()
-    #     choices = [(borrower.name, borrower.name) for borrower in borrowers]
-    #     return choices
-
     loan_id = models.IntegerField(unique=True, editable=False)
     loan_type = models.CharField(max_length=8, choices=LOAN_TYPES)
-    name = models.CharField(max_length=20, null=True, unique=True)
-    # name = models.ForeignKey(borrower_table, on_delete=models.CASCADE)
+    name = models.CharField(max_length=20, null=True)
     is_active = models.BooleanField(default=True)
     amount_loan = models.IntegerField()
     total_days = models.IntegerField()
@@ -54,7 +47,7 @@ class loan_table(models.Model):
     loan_profit = models.IntegerField(default=0)
     tata_profit = models.IntegerField(default=0) 
     is_approved = models.BooleanField(default=False)
-
+    staff = models.CharField(max_length=20, null=True)
 
     def save(self, *args, **kwargs):
             if not self.pk:
@@ -65,7 +58,6 @@ class loan_table(models.Model):
                         break
             super().save(*args, **kwargs)
 
-
     def __str__(self):
             return str(self.loan_id)
 
@@ -75,3 +67,24 @@ class loan_payment(models.Model):
      dates_to_pay = models.DateField(null=True)
      paid_dates = models.DateField(null=True)
      paid = models.BooleanField(default=False)
+     isAudit = models.BooleanField(default=False)
+     staff = models.CharField(max_length=20, null=True, unique=True)
+
+class loan_manager(models.Model):
+    total_balance = models.IntegerField(default=0)
+    ongoing = models.IntegerField(default=0)
+    profit = models.IntegerField(default=0)
+    current = models.IntegerField(default=0)
+
+class staff_manager(models.Model):
+    staff_name = models.CharField(max_length=20, null=True, unique=True)
+    amount = models.IntegerField(default=0)
+    date_requested = models.DateField(null=True)
+    date_approved = models.DateField(null=True)
+
+class payment_request(models.Model):
+    staff_name = models.CharField(max_length=20, null=True)
+    amount = models.IntegerField(default=0)
+    date_request = models.DateField(null=True)
+    date_approved = models.DateField(null=True)
+    borrower_name = models.CharField(max_length=20, null=True)

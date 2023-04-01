@@ -5,7 +5,7 @@ class DBController:
     def __init__(self):
         self.db = Database('loansystemdb', 'postgres', '1234', 'localhost', '5432')
 
-    def update_all_days_left(self,days_left, loan_id):
+    def update_days_left(self, loan_id, days_left):
         try:
             self.db.connect()
             update_query = "UPDATE loan_loan_table SET days_left = %s WHERE loan_id = %s"
