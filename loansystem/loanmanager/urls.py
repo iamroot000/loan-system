@@ -11,4 +11,5 @@ urlpatterns = [
     re_path('get-borrower-details/(?P<loan_id>\d+)', views.get_borrower_details, name='get-borrower-details'),
     re_path('approve-loan', views.approve_loan, name='approve-loan'),
     re_path('decline-loan',views.decline_loan, name='decline-loan'),
+    re_path('submit-payment-request', views.submit_payment_request, name='submit-payment-request'),
 ]

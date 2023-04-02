@@ -161,9 +161,9 @@ loanLinks.forEach(function(link) {
                     // var var_options_radios_label = document.getElementById("optionsRadios" + counter_payment).parentNode;
                     var var_options_radios_label = document.getElementById("optionsRadiosLabel" + counter_payment);
                     if(element.paid_dates===null){
-                        var_options_radios_label.innerHTML = element.dates_to_pay + "<span class='text-info' style='margin: 5px'>(NONE)</span>";                
+                        var_options_radios_label.innerHTML = element.dates_to_pay + "<span class='text-info' style='margin: 3px'>(NONE)</span>";                
                     }else{
-                        var_options_radios_label.innerHTML = element.dates_to_pay + "<span class='text-primary' style='margin: 5px'>" + element.paid_dates + "</span>";
+                        var_options_radios_label.innerHTML = element.dates_to_pay + "<span class='text-primary' style='margin: 3px'>" + element.paid_dates + "</span>";
                         var_options_radios.checked=true;
                         var_options_radios.disabled=true;
                     }
@@ -297,16 +297,43 @@ submitAddLoan.addEventListener('click', function() {
 
 updatePayment.addEventListener('click', function(){
     const checkboxes = document.querySelectorAll('[name="optionsRadios"]');
-    const checkedBoxes = [];
+    var checkedBoxes = [];
+    var loan_details_borrower = document.getElementById("loan_details_borrower");
+    var loan_details_amount_per_day = document.getElementById("loan_details_amount_per_day");
+    const loanId = document.querySelector('#loanDetailsModalTitle').textContent.split(': ')[1];
+    var borrower = loan_details_borrower.innerHTML;
+    var amountPerDay = loan_details_amount_per_day.innerHTML;
+    var csrftoken = getCookie('csrftoken');
     
     for (let i = 0; i < checkboxes.length; i++) {
         const checkbox = checkboxes[i];
         
         if (checkbox.checked && !checkbox.disabled){
-            checkedBoxes.push(checkbox);
+            checkedBoxes.push(checkbox.value);
         }
     }
+    console.log(amountPerDay);
+    console.log(borrower);
+    console.log(loanId);
     console.log(checkedBoxes);
+    $.ajax({
+        type: 'POST',
+        url: 'submit-payment-request',
+        headers: {
+            'X-CSRFToken': csrftoken
+        },
+        data: JSON.stringify({
+            'borrower': borrower,
+            'loan_id': loanId,
+            'list_of_paid_dates': checkedBoxes,
+            'amount_per_day': amountPerDay,
+        }),
+        success: function(response){
+            location.reload();
+            // console.log(response)
+        }
+    });
+
 });
 
 function getCookie(name) {
