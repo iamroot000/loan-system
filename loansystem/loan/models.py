@@ -84,7 +84,8 @@ class staff_manager(models.Model):
 
 class payment_request(models.Model):
     staff_name = models.CharField(max_length=20, null=True)
-    amount = models.TextField(max_length=500, null=True)
-    date_request = models.DateField(null=True)
+    amount = models.IntegerField()
+    dates_request = models.TextField(max_length=500, null=True)
     date_approved = models.DateField(null=True)
     borrower_name = models.CharField(max_length=20, null=True)
+    loan_id = models.IntegerField(null=True)

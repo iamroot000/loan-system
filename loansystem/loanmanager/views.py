@@ -1,7 +1,7 @@
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 from django.views import View
-from loan.models import loan_table, borrower_table, loan_payment
+from loan.models import loan_table, borrower_table, loan_payment, payment_request
 from .process.control import Manager
 from datetime import datetime, timedelta
 from django.shortcuts import get_object_or_404
@@ -16,7 +16,7 @@ class IndexView(View):
 
         template = "loanmanager/index.html"
         #display currently logged in user
-        # print(request.user.username)
+        #print(request.user.username)
 
         loanTableDetails = loan_table.objects.filter(is_approved=True)
         requestTableDetails = loan_table.objects.filter(is_approved=False)
@@ -56,10 +56,12 @@ def add_loan(request):
         varLoanProfit = C.loan_profit(varAmountLoan)
         varTataProfit = C.staff_profit(varAmountLoan)
         varUser = request.user
-        # borrower_table_obj = borrower_table(name=varName)
-        # plus_current_active_loan = int(borrower_table_obj.active_loans()) + 1
-        # borrower_table_obj.active_loans = plus_current_active_loan
-        # borrower_table_obj.save()
+        borrower_table_obj = borrower_table(name=varName)
+        # print(borrower_table_obj.active_loans)
+        # print(type(borrower_table_obj.active_loans))
+        plus_current_active_loan = int(borrower_table_obj.active_loans) + 1
+        borrower_table_obj.active_loans = plus_current_active_loan
+        borrower_table_obj.save()
         loan_table_obj = loan_table(name=varName, loan_type=varloanType, amount_loan=varAmountLoan, total_days=varDaysLeft, days_left=varDaysLeft, amount_per_day=varAmountPerDay, amount_left=varAmountLeft, loan_profit=varLoanProfit, tata_profit=varTataProfit, staff=request.user.username)
         loan_table_obj.save()
 
@@ -90,6 +92,7 @@ def submit_payment_request(request):
         auditor = request.user.username 
         list_of_paid_dates = dat.get('list_of_paid_dates')
         amount_per_day = dat.get('amount_per_day')
+        total_amount = amount_per_day * len(list_of_paid_dates)
         request_date = datetime.now()
 
         if list_of_paid_dates:
@@ -104,6 +107,11 @@ def submit_payment_request(request):
             for obj in loan_payment_obj:
                 obj.paid_dates = request_date
                 obj.save()
+
+            payment_request_obj = payment_request(loan_id=loan_id, staff_name=auditor, dates_request=list_of_paid_dates, amount=total_amount, borrower_name=borrower)
+            payment_request_obj.save()
+        
+
 
 
         data = {'status': 'success', 'message': 'Loan Request has been sent'}
@@ -145,4 +153,3 @@ def decline_loan(request):
     return HttpResponse('DECLINED')
 
 #make an alert method for payment overdue
-    
