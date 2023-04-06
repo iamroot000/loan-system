@@ -22,5 +22,5 @@ urlpatterns = [
     path('login/', include('login.urls')),
     path('loan/', include('loan.urls')),
     path('loan-manager/', include('loanmanager.urls')),
-    path('system-manager/', include('systemmanager.urls')),
+    path('admin-manager/', include('systemmanager.urls')),
 ]
