@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+{% block title %}Update/Create Loan{% endblock %}
+{% block css %}
+<link rel="stylesheet" href="/static/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+<link rel="stylesheet" href="/static/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+<link rel="stylesheet" href="/static/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="card-body">
+    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modal-default">Request Loan</button>
+    <table id="loantable" class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <th>Action</th>
+          <th>Loan ID</th>
+          <th>Borrower</th>
+          <th>Amount Loan</th>
+          <th>Due Date</th>
+        </tr>
+      </thead>
+      <tbody id="loan-table-content">
+        {% for ins in getLoanTableDetails %}
+        <tr>
+          <td><a class="nav-link active ps-0 loan-link" data-toggle="modal" data-target="#modal-lg" data-value='{{ ins.loan_id }}'>View</a></td>
+          <td>{{ ins.loan_id }}</td>
+          <td>{{ ins.name }}</td>
+          <td>{{ ins.amount_loan }}</td>
+          <td>{{ ins.due_date }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% comment %} modal for loan request {% endcomment %}
+<div class="modal fade" id="modal-default">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Request Form</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Borrower</label>
+          <input type="text" class="form-control" placeholder="Name" aria-label="Username" id="borrowerName">
+        </div>
+        <div class="form-group">
+          <label>Loan Amount</label>
+          <div class="input-group">
+            <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)" id="loanAmount">
+            <div class="input-group-append">
+              <span class="input-group-text">.00</span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group custom-control custom-checkbox">
+          <input class="custom-control-input" type="checkbox" id="customCheckbox2" checked>
+          <label for="customCheckbox2" class="custom-control-label">Payment: Daily</label>
+        </div>
+        <div class="form-group">
+          <label style="margin-right: 5px; display: inline-block;">Days:</label>
+          <select id="numberOfDays" class="custom-select" style="width: 60px; display: inline-block;">
+          </select>
+        </div>
+        <div class="form-group">
+          <label style="margin-right: 5px; display: inline-block;">Amount Per Day</label>
+          <input type="text" class="form-control" id="amountPerDay" style="width: 80px; display: inline-block; margin-right: 20px;" disabled>
+          <label style="margin-right: 5px; display: inline-block;">Total Amount</label>
+          <input type="text" class="form-control" id="loanWithPercent" style="width: 100px; display: inline-block;" disabled>
+        </div>
+      </div>
+      <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-success" id="submitAddLoan">Submit Request</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% comment %} modal for loan table {% endcomment %}
+<div class="modal fade" id="modal-lg">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content" id="modalLoanDetailTable">
+      <div class="modal-header">
+        <h4 class="modal-title nav-link active ps-0" id="loanDetailsModalTitle"></h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-3">
+              <div class="form-group">
+                <label>Borrower: </label>
+                <label id="loan_details_borrower"></label>
+              </div>
+              <div class="form-group">
+                <label>Amount Loan: </label>
+                <label id="loan_details_amount_loan"></label>
+              </div>
+              <div class="form-group">
+                <label>Start Date: </label>
+                <label id="loan_details_start_date"></label>
+              </div>
+              <div class="form-group">
+                <label>Due Date: </label>
+                <label id="loan_details_due_date"></label>
+              </div>
+              <div class="form-group">
+                <label>Total Days: </label>
+                <label id="loan_details_total_days"></label>
+              </div>
+              <div class="form-group">
+                <label>Amount Per Day: </label>
+                <label id="loan_details_amount_per_day"></label>
+              </div>
+          </div>
+          <div class="col-md-3">
+              <div class="form-group">
+                <label>Progress: </label>
+                <div id="loan_details_progress"></div>
+              </div>
+              <div class="form-group">
+                <label>Total Profit: </label>
+                <label id="loan_details_total_profit"></label>
+              </div>
+              <div class="form-group">
+                <label>Amount Paid: </label>
+                <label id="loan_details_amount_paid"></label>
+              </div>
+              <div class="form-group">
+                <label>Amount Left: </label>
+                <label id="loan_details_amount_left"></label>
+              </div>
+              <div class="form-group">
+                <label>Paid Day/s: </label>
+                <label id="loan_details_paid_days"></label>
+              </div>
+              <div class="form-group">
+                <label>Day/s Left: </label>
+                <label id="loan_details_days_left"></label>
+              </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group" id="payment_col_1">
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group" id="payment_col_2">
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group" id="payment_col_3">
+            </div>
+          </div>
+        </div>
+        {% comment %} <div class="row">
+        </div> {% endcomment %}
+      </div>
+      <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-success btn-fw" id="updatePayment">Update</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+  $(function () {
+    $("#loantable").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+    });
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+  });
+</script>
+<script src="/static/plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="/static/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+<script src="/static/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+<script src="/static/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+<script src="/static/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+<script src="/static/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+<script src="/static/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+<script src="/static/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+<script src="/static/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+<script src="/static/plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
+<script src="/static/dist/js/updateloan/main.js"></script>
+{% endblock %}
