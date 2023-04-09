@@ -8,27 +8,27 @@ const updatePayment = document.getElementById("updatePayment");
 const const_payment_col_1 = document.getElementById("payment_col_1");
 for (let i = 1; i < 13; i++) {
     const_payment_col_1.innerHTML +=
-    "<div class='form-check' id='paymentCheckBox"+i+"' hidden>" +
-    "<input type='checkbox' class='form-check-input' name='optionsRadios' id='optionsRadios"+i+"' value=''>" +
-    "<span id='optionsRadiosLabel"+i+"'></span>"+
+    "<div class='custom-control custom-checkbox' id='paymentCheckBox"+i+"' hidden>" +
+    "<input type='checkbox' class='custom-control-input' name='optionsRadios' id='optionsRadios"+i+"' value=''>" +
+    "<label for='optionsRadios"+i+"' class='custom-control-label' id='optionsRadiosLabel"+i+"'></label>"+
     "</div>";
 }
 
 const const_payment_col_2 = document.getElementById("payment_col_2");
 for (let i = 13; i < 25; i++) {
     const_payment_col_2.innerHTML +=
-    "<div class='form-check' id='paymentCheckBox"+i+"' hidden>" +
-    "<input type='checkbox' class='form-check-input' name='optionsRadios' id='optionsRadios"+i+"' value=''>" +
-    "<span id='optionsRadiosLabel"+i+"'></span>"+
+    "<div class='custom-control custom-checkbox' id='paymentCheckBox"+i+"' hidden>" +
+    "<input type='checkbox' class='custom-control-input' name='optionsRadios' id='optionsRadios"+i+"' value=''>" +
+    "<label for='optionsRadios"+i+"' class='custom-control-label' id='optionsRadiosLabel"+i+"'></label>"+
     "</div>";
 }
 
 const const_payment_col_3 = document.getElementById("payment_col_3");
 for (let i = 25; i < 37; i++) {
     const_payment_col_3.innerHTML +=
-    "<div class='form-check' id='paymentCheckBox"+i+"' hidden>" +
-    "<input type='checkbox' class='form-check-input' name='optionsRadios' id='optionsRadios"+i+"' value=''>" +
-    "<span id='optionsRadiosLabel"+i+"'></span>"+
+    "<div class='custom-control custom-checkbox' id='paymentCheckBox"+i+"' hidden>" +
+    "<input type='checkbox' class='custom-control-input' name='optionsRadios' id='optionsRadios"+i+"' value=''>" +
+    "<label for='optionsRadios"+i+"' class='custom-control-label' id='optionsRadiosLabel"+i+"'></label>"+
     "</div>";
 }
 
@@ -68,8 +68,8 @@ loanLinks.forEach(function(link) {
                     var varDaysLeft = detail.days_left;
                     var varDueDate = detail.due_date;
                     var varLoanProfit = detail.loan_profit;
-                    var varTataProfit = detail.tata_profit;
-                    var varTotalProfit = varTataProfit + varLoanProfit;
+                    var varStaffProfit = detail.staff_profit;
+                    var varTotalProfit = varStaffProfit + varLoanProfit;
                     var varName = detail.name;
                     var varPaidAmount = detail.paid_amount;
                     var varPaidDays = detail.paid_days;
@@ -199,10 +199,10 @@ numberOfDaysSelect.addEventListener('change', function() {
 });
 
 // Get the submit button element
-const submitAddLoan = document.getElementById('submitAddLoan');
+const submitLoanRequest = document.getElementById('submitAddLoan');
 
 // Add event listener to the submit button
-submitAddLoan.addEventListener('click', function() {
+submitLoanRequest.addEventListener('click', function() {
     // Retrieve the values of the input fields
     const borrowerName = document.getElementById('borrowerName').value;
     const loanAmount = document.getElementById('loanAmount').value;

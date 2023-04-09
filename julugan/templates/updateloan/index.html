@@ -22,7 +22,7 @@
       <tbody id="loan-table-content">
         {% for ins in getLoanTableDetails %}
         <tr>
-          <td><a class="nav-link active ps-0 loan-link" data-toggle="modal" data-target="#modal-lg" data-value='{{ ins.loan_id }}'>View</a></td>
+          <td><a class="nav-link active ps-0 loan-link" data-toggle="modal" data-target="#modal-xl" data-value='{{ ins.loan_id }}'>View</a></td>
           <td>{{ ins.loan_id }}</td>
           <td>{{ ins.name }}</td>
           <td>{{ ins.amount_loan }}</td>
@@ -59,7 +59,7 @@
           </div>
         </div>
         <div class="form-group custom-control custom-checkbox">
-          <input class="custom-control-input" type="checkbox" id="customCheckbox2" checked>
+          <input class="custom-control-input" type="checkbox" id="paymentMethod" checked>
           <label for="customCheckbox2" class="custom-control-label">Payment: Daily</label>
         </div>
         <div class="form-group">
@@ -83,8 +83,8 @@
 </div>
 
 {% comment %} modal for loan table {% endcomment %}
-<div class="modal fade" id="modal-lg">
-  <div class="modal-dialog modal-lg">
+<div class="modal fade" id="modal-xl">
+  <div class="modal-dialog modal-xl">
     <div class="modal-content" id="modalLoanDetailTable">
       <div class="modal-header">
         <h4 class="modal-title nav-link active ps-0" id="loanDetailsModalTitle"></h4>
@@ -197,5 +197,10 @@
 <script src="/static/plugins/datatables-buttons/js/buttons.print.min.js"></script>
 <script src="/static/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 <script src="/static/plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
+<script>
+  $(function () {
+    bsCustomFileInput.init();
+  });
+  </script>
 <script src="/static/dist/js/updateloan/main.js"></script>
 {% endblock %}

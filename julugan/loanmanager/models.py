@@ -45,7 +45,7 @@ class loan_table(models.Model):
     status = models.CharField(max_length=15,default='incomplete')
     renew_count = models.IntegerField(default=0)
     loan_profit = models.IntegerField(default=0)
-    tata_profit = models.IntegerField(default=0) 
+    staff_profit = models.IntegerField(default=0) 
     is_approved = models.BooleanField(default=False)
     staff = models.CharField(max_length=20, null=True)
 
@@ -89,3 +89,5 @@ class payment_request(models.Model):
     date_approved = models.DateField(null=True)
     borrower_name = models.CharField(max_length=20, null=True)
     loan_id = models.IntegerField(null=True)
+    request_date = models.DateField(null=True)
+    is_approved = models.BooleanField(default=False)
