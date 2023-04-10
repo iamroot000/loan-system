@@ -1,8 +1,9 @@
-var approveButtons = document.querySelectorAll(".approve-loan-btn");
+var approveLoanButtons = document.querySelectorAll(".approve-loan-btn");
+var approvePaymentButtons = document.querySelectorAll(".approve-payment-btn");
 
-if (approveButtons.length === 1) {
+if (approveLoanButtons.length === 1) {
     // If there is only one button, attach the click event listener directly to the button
-    approveButtons[0].addEventListener("click", function() {
+    approveLoanButtons[0].addEventListener("click", function() {
         var loanId = this.closest("tr").querySelector(".request-tbl-loan-id").textContent;
         var csrftoken = getCookie('csrftoken');
         // Log the loan id value to the console
@@ -27,7 +28,7 @@ if (approveButtons.length === 1) {
     });
 } else {
     // Loop through all the buttons and attach a click event listener to each
-    approveButtons.forEach(function(button) {
+    approveLoanButtons.forEach(function(button) {
         button.addEventListener("click", function() {
             // Get the loan id value
             var loanId = this.parentNode.parentNode.querySelector(".request-tbl-loan-id").textContent;
@@ -43,6 +44,61 @@ if (approveButtons.length === 1) {
                 },
                 data: {
                     'loanId': loanId,
+                },
+                success: function(response){
+                    // console.log(response);
+                    location.reload();
+                }
+            });
+            
+            return false;
+        });
+    });
+}
+
+if (approvePaymentButtons.length === 1) {
+    // If there is only one button, attach the click event listener directly to the button
+    approvePaymentButtons[0].addEventListener("click", function() {
+        var paymentRequestNumber = this.closest("tr").querySelector(".payment-tbl-request-number").textContent;
+        var csrftoken = getCookie('csrftoken');
+        // Log the loan id value to the console
+        console.log(paymentRequestNumber);
+        
+        $.ajax({
+            type: 'POST',
+            url: 'approve-payment',
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            data: {
+                'paymentRequestNumber': paymentRequestNumber,
+            },
+            success: function(response){
+                // console.log(response);
+                location.reload();
+            }
+        });
+        
+        return false;
+    });
+} else {
+    // Loop through all the buttons and attach a click event listener to each
+    approvePaymentButtons.forEach(function(button) {
+        button.addEventListener("click", function() {
+            // Get the loan id value
+            var paymentRequestNumber = this.parentNode.parentNode.querySelector(".payment-tbl-request-number").textContent;
+            var csrftoken = getCookie('csrftoken');
+            // Log the loan id value to the console
+            console.log(paymentRequestNumber);
+            
+            $.ajax({
+                type: 'POST',
+                url: 'approve-payment',
+                headers: {
+                    'X-CSRFToken': csrftoken
+                },
+                data: {
+                    'paymentRequestNumber': paymentRequestNumber,
                 },
                 success: function(response){
                     // console.log(response);

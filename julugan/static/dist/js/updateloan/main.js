@@ -104,12 +104,16 @@ loanLinks.forEach(function(link) {
                     // var var_options_radios_label = document.getElementById("optionsRadios" + counter_payment).parentNode;
                     var var_options_radios_label = document.getElementById("optionsRadiosLabel" + counter_payment);
                     if(element.paid_dates===null){
-                        var_options_radios_label.innerHTML = element.dates_to_pay + "<span class='text-info' style='margin: 3px'>(NONE)</span>";                
-                    }else{
-                        var_options_radios_label.innerHTML = element.dates_to_pay + "<span class='text-primary' style='margin: 3px'>" + element.paid_dates + "</span>";
+                        var_options_radios_label.innerHTML = element.dates_to_pay + "<span class='text-info' style='margin: 2px'>(NONE)</span>";                
+                    } else{
+                        var_options_radios_label.innerHTML = element.dates_to_pay + "<span class='text-primary' style='margin: 2px'>" + element.paid_dates + "</span>";
                         var_options_radios.checked=true;
                         var_options_radios.disabled=true;
                     }
+                    if(element.paid===true){
+                        var_options_radios_label.innerHTML = element.dates_to_pay + "<span class='text-success' style='margin: 2px'>" + element.paid_dates + "</span>";
+                    }
+                    
                     counter_payment++;
                 });
             },

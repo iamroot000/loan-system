@@ -9,11 +9,7 @@ from django.shortcuts import get_object_or_404
 class IndexView(View):
 
     def get(self, request):
-
         template = "loanmanager/index.html"
-        #display currently logged in user
-        #print(request.user.username)
-
         getRequestTableDetails = loan_table.objects.filter(is_approved=False)
         getRequestPaymentDetails = payment_request.objects.filter(is_approved=False)
         context = {
@@ -30,7 +26,6 @@ def approve_loan(request):
         days_to_pay=loan_table_obj.total_days
         print(days_to_pay)
         for day in range(1, days_to_pay+1):
-            # print(day)
             delta = timedelta(days=day)
             date = now + delta
             date_str = date.strftime("%Y-%m-%d")
@@ -46,8 +41,6 @@ def approve_loan(request):
         loan_table_obj.save()
         data = {'status': 'success', 'message': 'Loan Request has been Approved'}
         return JsonResponse(data)
-        
-
     
 def decline_loan(request):
     if request.method == 'POST':
@@ -56,4 +49,31 @@ def decline_loan(request):
         obj_loan_table.is_approved = True
         obj_loan_table.save()
         data = {'status': 'success', 'message': 'Loan Declined'}
+        return JsonResponse(data) 
+
+def approve_payment(request):
+    if request.method == 'POST':
+        payment_request_number = request.POST.get('paymentRequestNumber')
+        payment_request_obj = payment_request.objects.get(request_number=payment_request_number)
+        request_dates = payment_request_obj.dates_request
+        list_request_dates = eval(request_dates)
+        loan_id = payment_request_obj.loan_id
+        auditor = payment_request_obj.staff_name
+        for request_date in list_request_dates:
+            loan_payment_obj = loan_payment.objects.get(loan_id__loan_id=loan_id, dates_to_pay=request_date)
+            loan_payment_obj.isAudit = True
+            loan_payment_obj.paid = True
+            loan_payment_obj.staff = auditor
+            loan_payment_obj.save()
+            payment_request_obj.is_approved = True
+            payment_request_obj.save()
+        loan_table_obj = get_object_or_404(loan_table, loan_id=loan_id)
+        amount = payment_request_obj.amount
+        loan_table_obj.paid_amount = loan_table_obj.paid_amount + int(amount)
+        loan_table_obj.amount_left = loan_table_obj.amount_left - int(amount)
+        loan_table_obj.paid_days = loan_table_obj.paid_days + len(list_request_dates)
+        loan_table_obj.days_left = loan_table_obj.days_left - len(list_request_dates)
+        loan_table_obj.save()
+        
+        data = {'status': 'success', 'message': 'Payment Audited'}
         return JsonResponse(data)

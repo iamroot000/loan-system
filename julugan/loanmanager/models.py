@@ -68,7 +68,7 @@ class loan_payment(models.Model):
      paid_dates = models.DateField(null=True)
      paid = models.BooleanField(default=False)
      isAudit = models.BooleanField(default=False)
-     staff = models.CharField(max_length=20, null=True, unique=True)
+     staff = models.CharField(max_length=20, null=True)
 
 class loan_manager(models.Model):
     total_balance = models.IntegerField(default=0)
@@ -83,11 +83,21 @@ class staff_manager(models.Model):
     date_approved = models.DateField(null=True)
 
 class payment_request(models.Model):
+    request_number = models.IntegerField(unique=True, editable=False, null=True)
     staff_name = models.CharField(max_length=20, null=True)
-    amount = models.IntegerField()
+    amount = models.IntegerField(null=True)
     dates_request = models.TextField(max_length=500, null=True)
     date_approved = models.DateField(null=True)
     borrower_name = models.CharField(max_length=20, null=True)
     loan_id = models.IntegerField(null=True)
     request_date = models.DateField(null=True)
     is_approved = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+            if not self.pk:
+                while True:
+                    randomNumber = random.randint(100000,999999)
+                    if not payment_request.objects.filter(request_number=randomNumber).exists():
+                        self.request_number = randomNumber
+                        break
+            super().save(*args, **kwargs)

@@ -46,6 +46,7 @@
                     <table class="table">
                         <thead>
                             <tr>
+                                <th>Request #</th>
                                 <th>Loan ID</th>
                                 <th>Amount</th>
                                 <th>Auditor</th>
@@ -55,7 +56,8 @@
                         <tbody id="request-table-content">
                             {% for ins in getRequestPaymentDetails %}
                             <tr>
-                                <td>{{ ins.loan_id }}</td>
+                                <td class='payment-tbl-request-number'>{{ ins.request_number }}</td>
+                                <td>{{ ins.borrower_name }}</td>
                                 <td>{{ ins.amount }}</td>
                                 <td>{{ ins.staff_name }}</td>
                                 <td><button type="button" class="btn btn-outline-success btn-fw approve-payment-btn">Approve</button></td>
