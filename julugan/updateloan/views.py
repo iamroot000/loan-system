@@ -37,15 +37,13 @@ def add_loan(request):
         varAmountPerDay = request.POST.get('amountPerDay')
         varLoanProfit = C.loan_profit(varAmountLoan)
         varStaffProfit = C.staff_profit(varAmountLoan)
-        varUser = request.user
+        varUser = request.user.username
         borrower_table_obj = borrower_table(name=varName)
-        # print(borrower_table_obj.active_loans)
-        # print(type(borrower_table_obj.active_loans))
         plus_current_active_loan = int(borrower_table_obj.active_loans) + 1
         borrower_table_obj.active_loans = plus_current_active_loan
-        borrower_table_obj.save()
+        # borrower_table_obj.save()
         loan_table_obj = loan_table(name=varName, loan_type=varloanType, amount_loan=varAmountLoan, total_days=varDaysLeft, days_left=varDaysLeft, amount_per_day=varAmountPerDay, amount_left=varAmountLeft, loan_profit=varLoanProfit, staff_profit=varStaffProfit, staff=request.user.username)
-        loan_table_obj.save()
+        # loan_table_obj.save()
 
         print(varUser)
 

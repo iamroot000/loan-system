@@ -58,9 +58,13 @@
             </div>
           </div>
         </div>
-        <div class="form-group custom-control custom-checkbox">
-          <input class="custom-control-input" type="checkbox" id="paymentMethod" checked>
-          <label for="customCheckbox2" class="custom-control-label">Payment: Daily</label>
+        {% comment %} "<div class='custom-control custom-checkbox' id='paymentCheckBox"+i+"' hidden>" +
+          "<input type='checkbox' class='custom-control-input' name='optionsRadios' id='optionsRadios"+i+"' value=''>" +
+          "<label for='optionsRadios"+i+"' class='custom-control-label' id='optionsRadiosLabel"+i+"'></label>"+
+          "</div>"; {% endcomment %}
+        <div class="custom-control custom-checkbox">
+          <input class="custom-control-input" type="checkbox" id="paymentMethod">
+          <label for="paymentMethod" class="custom-control-label">Payment: Daily</label>
         </div>
         <div class="form-group">
           <label style="margin-right: 5px; display: inline-block;">Days:</label>
