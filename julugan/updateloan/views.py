@@ -17,9 +17,11 @@ class IndexView(View):
 
         template = "updateloan/index.html"
 
-        getLoanTableDetails = loan_table.objects.filter(is_approved=True)
+        getLoanTableDetails = loan_table.objects.filter(is_approved=True, loan_type='daily')
+        getLoanTableDetailsCustom = loan_table.objects.filter(is_approved=True, loan_type='custom')
         context = {
             'getLoanTableDetails': getLoanTableDetails,
+            'getLoanTableDetailsCustom': getLoanTableDetailsCustom,
         }
         return render(request, template, context)
     
@@ -27,11 +29,11 @@ class IndexView(View):
 #make condition catch for existing active borrower ( confirmation displaying )
 #Number of activeloans
 #add requestor
-def add_loan(request):
+def add_loan_daily(request):
     if request.method == 'POST':
         varName = request.POST.get('borrowerName')
         varAmountLoan = int(request.POST.get('loanAmount'))
-        varloanType = C.loan_method(request.POST.get('paymentMethod'))
+        varloanType = request.POST.get('paymentMethod')
         varAmountLeft = request.POST.get('loanWithPercent')
         varDaysLeft = request.POST.get('numberOfDays')
         varAmountPerDay = request.POST.get('amountPerDay')
@@ -41,16 +43,36 @@ def add_loan(request):
         borrower_table_obj = borrower_table(name=varName)
         plus_current_active_loan = int(borrower_table_obj.active_loans) + 1
         borrower_table_obj.active_loans = plus_current_active_loan
-        # borrower_table_obj.save()
+        borrower_table_obj.save()
         loan_table_obj = loan_table(name=varName, loan_type=varloanType, amount_loan=varAmountLoan, total_days=varDaysLeft, days_left=varDaysLeft, amount_per_day=varAmountPerDay, amount_left=varAmountLeft, loan_profit=varLoanProfit, staff_profit=varStaffProfit, staff=request.user.username)
-        # loan_table_obj.save()
-
+        loan_table_obj.save()
         print(varUser)
-
         data = {'status': 'success', 'message': 'Loan Request has been sent'}
     else:
         data = {'status': 'error', 'message': 'Invalid request method.'}
+    return JsonResponse(data)
 
+def add_loan_custom(request):
+    if request.method == 'POST':
+        varName = request.POST.get('borrowerName')
+        varAmountLoan = int(request.POST.get('loanAmount'))
+        varloanType = request.POST.get('paymentMethod')
+        varAmountLeft = request.POST.get('loanWithPercentCustom')
+        dueDate = request.POST.get('customDueDate')
+        #update daysleft after approval
+        # varDaysLeft = request.POST.get('numberOfDays')
+        varLoanProfit = C.loan_profit(varAmountLoan)
+        varStaffProfit = C.staff_profit(varAmountLoan)
+        varUser = request.user.username
+        borrower_table_obj = borrower_table(name=varName)
+        plus_current_active_loan = int(borrower_table_obj.active_loans) + 1
+        borrower_table_obj.active_loans = plus_current_active_loan
+        borrower_table_obj.save()
+        loan_table_obj = loan_table(name=varName, loan_type=varloanType, amount_loan=varAmountLoan, amount_left=varAmountLeft, loan_profit=varLoanProfit, staff_profit=varStaffProfit, staff=varUser,due_date=dueDate)
+        loan_table_obj.save()
+        data = {'status': 'success', 'message': 'Loan Request has been sent'}
+    else:
+        data = {'status': 'error', 'message': 'Invalid request method.'}
     return JsonResponse(data)
 
 def get_borrower_details(request,loan_id):

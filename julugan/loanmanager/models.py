@@ -24,7 +24,7 @@ class borrower_table(models.Model):
 class loan_table(models.Model):
 
     LOAN_TYPES = [
-        ('monthly', 'Monthly'),
+        ('custom', 'Custom'),
         ('daily', 'Daily'),
     ]
 
@@ -32,15 +32,15 @@ class loan_table(models.Model):
     loan_type = models.CharField(max_length=8, choices=LOAN_TYPES)
     name = models.CharField(max_length=20, null=True)
     is_active = models.BooleanField(default=True)
-    amount_loan = models.IntegerField()
-    total_days = models.IntegerField()
+    amount_loan = models.IntegerField(default=0)
+    total_days = models.IntegerField(default=0)
     start_date = models.DateField(null=True)
     due_date = models.DateField(null=True)
     paid_days = models.IntegerField(default=0)
     days_left = models.IntegerField(default=0)
     paid_amount = models.IntegerField(default=0)
-    amount_per_day = models.IntegerField()
-    amount_left = models.IntegerField()
+    amount_per_day = models.IntegerField(default=0)
+    amount_left = models.IntegerField(default=0)
     progress = models.IntegerField(default=0)
     status = models.CharField(max_length=15,default='incomplete')
     renew_count = models.IntegerField(default=0)

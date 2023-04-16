@@ -4,6 +4,7 @@ const numberOfDaysSelect = document.getElementById('numberOfDays');
 const loanWithPercent = document.getElementById("loanWithPercent");
 const amountPerDay = document.getElementById("amountPerDay");
 const updatePayment = document.getElementById("updatePayment");
+const loanWithPercentCustom = document.getElementById("loanWithPercentCustom");
 
 const const_payment_col_1 = document.getElementById("payment_col_1");
 for (let i = 1; i < 13; i++) {
@@ -150,6 +151,7 @@ loanAmountInput.addEventListener('input', function() {
     numberOfDaysSelect.innerHTML = options.map(option => `<option>${option}</option>`).join('');
     //Update the loan percentage field value 10% of the total amount loan
     loanWithPercent.value = Number(this.value) * 0.1 + Number(this.value);
+    loanWithPercentCustom.value = Number(this.value) * 0.1 + Number(this.value);
     //Update the field total of days to pay value depends on the set amount loan and days
     numberOfDaysSelect.selectedIndex = 0;
     
@@ -210,36 +212,58 @@ submitLoanRequest.addEventListener('click', function() {
     // Retrieve the values of the input fields
     const borrowerName = document.getElementById('borrowerName').value;
     const loanAmount = document.getElementById('loanAmount').value;
-    const paymentMethod = document.getElementById('paymentMethod').checked;
+    const paymentMethod = document.getElementById('paymentMethod');
     const numberOfDays = document.getElementById('numberOfDays').value;
     const amountPerDay = document.getElementById('amountPerDay').value;
     const loanWithPercent = document.getElementById('loanWithPercent').value;
+    const loanWithPercentCustom = $('#loanWithPercentCustom').value;
+    const customDueDate = $('#custom-due-date').value;
     var csrftoken = getCookie('csrftoken');
     
     // Log the values to the console
     console.log(borrowerName);
     console.log(loanAmount);
     console.log(paymentMethod);
-    
-    $.ajax({
-        type: 'POST',
-        url: 'add-loan',
-        headers: {
-            'X-CSRFToken': csrftoken
-        },
-        data: {
-            'borrowerName': borrowerName,
-            'loanAmount': loanAmount,
-            'paymentMethod': paymentMethod,
-            'numberOfDays': numberOfDays,
-            'amountPerDay': amountPerDay,
-            'loanWithPercent': loanWithPercent,
-        },
-        success: function(response){
-            location.reload();
-        }
-    });
-    
+
+    if(paymentMethod.checked){
+        $.ajax({
+            type: 'POST',
+            url: 'add-loan-daily',
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            data: {
+                'borrowerName': borrowerName,
+                'loanAmount': loanAmount,
+                'paymentMethod': 'daily',
+                'numberOfDays': numberOfDays,
+                'amountPerDay': amountPerDay,
+                'loanWithPercent': loanWithPercent,
+            },
+            success: function(response){
+                location.reload();
+            }
+        });
+    }else{
+        $.ajax({
+            type: 'POST',
+            url: 'add-loan-custom',
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            data: {
+                'borrowerName': borrowerName,
+                'loanAmount': loanAmount,
+                'paymentMethod': 'custom',
+                'loanWithPercent': loanWithPercent,
+                'customDueDate': customDueDate,
+                'loanWithPercentCustom': loanWithPercentCustom,
+            },
+            success: function(response){
+                location.reload();
+            }
+        });
+    }
 });
 
 updatePayment.addEventListener('click', function(){

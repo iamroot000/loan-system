@@ -6,6 +6,9 @@
 <link rel="stylesheet" href="/static/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
 {% endblock %}
 {% block content %}
+<div>
+<button type="button" class="btn btn-success" data-toggle="modal" data-target="#modal-default" style="text-align: right; float: right; margin-bottom: 15px">Request Loan</button>
+</div>
 <div class="row">
     <div class="col-md-7">
         <div class="card">
@@ -17,8 +20,8 @@
                             <tr>
                                 <th>Loan ID</th>
                                 <th>Name</th>
-                                <th>Amount Loan</th>
-                                <th>Note</th>
+                                <th>Amount</th>
+                                <th>Type</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -28,7 +31,7 @@
                                 <td><a class="nav-link active ps-0 request-tbl-loan-id" href="#">{{ ins.loan_id }}</a></td>
                                 <td>{{ ins.name }}</td>
                                 <td>{{ ins.amount_loan }}</td>
-                                <td>note</td>
+                                <td>{{ ins.loan_type }}</td>
                                 <td><button type="button" class="btn btn-outline-success btn-fw approve-loan-btn">Approve</button></td>
                             </tr>
                             {% endfor %}
@@ -46,7 +49,7 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>Request #</th>
+                                <th>Request ID</th>
                                 <th>Loan ID</th>
                                 <th>Amount</th>
                                 <th>Auditor</th>

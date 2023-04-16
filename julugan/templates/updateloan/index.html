@@ -1,14 +1,20 @@
 {% extends "base.html" %}
 {% block title %}Update/Create Loan{% endblock %}
 {% block css %}
+{% comment %} for datatables {% endcomment %}
 <link rel="stylesheet" href="/static/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
 <link rel="stylesheet" href="/static/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
 <link rel="stylesheet" href="/static/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+{% comment %} for input date {% endcomment %}
+<link rel="stylesheet" href="/static/plugins/daterangepicker/daterangepicker.css">
+<link rel="stylesheet" href="/static/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
 {% endblock %}
 {% block content %}
 <div class="card">
+  <div class="card-header">
+    <h3 class="card-title loan-table-title">Table for Daily Payment:</h3><button type="button" class="btn btn-success" data-toggle="modal" data-target="#modal-default" style="text-align: right; float: right;">Request Loan</button>
+  </div>
   <div class="card-body">
-    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modal-default">Request Loan</button>
     <table id="loantable" class="table table-bordered table-striped">
       <thead>
         <tr>
@@ -22,7 +28,37 @@
       <tbody id="loan-table-content">
         {% for ins in getLoanTableDetails %}
         <tr>
-          <td><a class="nav-link active ps-0 loan-link" data-toggle="modal" data-target="#modal-xl" data-value='{{ ins.loan_id }}'>View</a></td>
+          <td><a class="nav-link active ps-0 loan-link" data-toggle="modal" data-target="#modal-daily" data-value='{{ ins.loan_id }}'>View</a></td>
+          <td>{{ ins.loan_id }}</td>
+          <td>{{ ins.name }}</td>
+          <td>{{ ins.amount_loan }}</td>
+          <td>{{ ins.due_date }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h3 class="card-title loan-table-title">Table for Custom Payment:</h3>
+  </div>
+  <div class="card-body">
+    <table id="loantableCustom" class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <th>Action</th>
+          <th>Loan ID</th>
+          <th>Borrower</th>
+          <th>Amount Loan</th>
+          <th>Due Date</th>
+        </tr>
+      </thead>
+      <tbody id="loan-table-content">
+        {% for ins in getLoanTableDetailsCustom %}
+        <tr>
+          <td><a class="nav-link active ps-0 loan-link" data-toggle="modal" data-target="#modal-custom" data-value='{{ ins.loan_id }}'>View</a></td>
           <td>{{ ins.loan_id }}</td>
           <td>{{ ins.name }}</td>
           <td>{{ ins.amount_loan }}</td>
@@ -58,20 +94,27 @@
             </div>
           </div>
         </div>
-        {% comment %} "<div class='custom-control custom-checkbox' id='paymentCheckBox"+i+"' hidden>" +
-          "<input type='checkbox' class='custom-control-input' name='optionsRadios' id='optionsRadios"+i+"' value=''>" +
-          "<label for='optionsRadios"+i+"' class='custom-control-label' id='optionsRadiosLabel"+i+"'></label>"+
-          "</div>"; {% endcomment %}
-        <div class="custom-control custom-checkbox">
-          <input class="custom-control-input" type="checkbox" id="paymentMethod">
-          <label for="paymentMethod" class="custom-control-label">Payment: Daily</label>
+        <div class="custom-control custom-checkbox" style="margin-bottom: 10px">
+          <input class="custom-control-input" type="checkbox" id="paymentMethod" onclick="changeLabel()">
+          <label id="paymentLabel" for="paymentMethod" class="custom-control-label">Payment: Custom</label>
         </div>
-        <div class="form-group">
+        <div class="form-group payment-method-custom">
+          <label>Custom Due Date:</label>
+            <div class="input-group date" id="custom-due-date" data-target-input="nearest">
+                <input type="text" class="form-control datetimepicker-input" data-target="#custom-due-date"/>
+                <div class="input-group-append" data-target="#custom-due-date" data-toggle="datetimepicker">
+                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                </div>
+            </div>
+          <label style="margin-right: 5px; display: inline-block;">Total Amount</label>
+          <input type="text" class="form-control" id="loanWithPercentCustom" style="margin-top: 15px; width: 100px; display: inline-block;" disabled>
+        </div>
+        <div class="form-group payment-method-daily">
           <label style="margin-right: 5px; display: inline-block;">Days:</label>
           <select id="numberOfDays" class="custom-select" style="width: 60px; display: inline-block;">
           </select>
         </div>
-        <div class="form-group">
+        <div class="form-group payment-method-daily">
           <label style="margin-right: 5px; display: inline-block;">Amount Per Day</label>
           <input type="text" class="form-control" id="amountPerDay" style="width: 80px; display: inline-block; margin-right: 20px;" disabled>
           <label style="margin-right: 5px; display: inline-block;">Total Amount</label>
@@ -87,7 +130,7 @@
 </div>
 
 {% comment %} modal for loan table {% endcomment %}
-<div class="modal fade" id="modal-xl">
+<div class="modal fade" id="modal-daily">
   <div class="modal-dialog modal-xl">
     <div class="modal-content" id="modalLoanDetailTable">
       <div class="modal-header">
@@ -190,6 +233,21 @@
       "responsive": true,
     });
   });
+
+  $(function () {
+    $("#loantableCustom").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+    });
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+  });
 </script>
 <script src="/static/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="/static/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
@@ -201,10 +259,42 @@
 <script src="/static/plugins/datatables-buttons/js/buttons.print.min.js"></script>
 <script src="/static/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 <script src="/static/plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
+<script src="/static/plugins/daterangepicker/daterangepicker.js"></script>
+<script src="/static/plugins/moment/moment.min.js"></script>
+<script src="/static/plugins/inputmask/jquery.inputmask.min.js"></script>
+<script src="/static/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+<script src="/static/plugins/select2/js/select2.full.min.js"></script>
 <script>
+
+  const paymentCustom = $('.payment-method-custom');
+  const paymentDaily = $('.payment-method-daily');
+  paymentDaily.hide();
+  paymentCustom.show();
+
   $(function () {
     bsCustomFileInput.init();
+    //Date picker
+    $('#custom-due-date').datetimepicker({
+      format: 'L'
+    });
   });
-  </script>
+
+  function changeLabel() {
+    var checkbox = document.getElementById("paymentMethod");
+    var label = document.getElementById("paymentLabel");
+    var paymentCustom = $('.payment-method-custom');
+    var paymentDaily = $('.payment-method-daily');
+    
+    if (checkbox.checked) {
+      label.innerHTML = "Payment: Daily";
+      paymentCustom.hide();
+      paymentDaily.show();
+    } else {
+      label.innerHTML = "Payment: Custom";
+      paymentDaily.hide();
+      paymentCustom.show();
+    }
+  }
+</script>
 <script src="/static/dist/js/updateloan/main.js"></script>
 {% endblock %}
