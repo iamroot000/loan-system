@@ -216,8 +216,8 @@ submitLoanRequest.addEventListener('click', function() {
     const numberOfDays = document.getElementById('numberOfDays').value;
     const amountPerDay = document.getElementById('amountPerDay').value;
     const loanWithPercent = document.getElementById('loanWithPercent').value;
-    const loanWithPercentCustom = $('#loanWithPercentCustom').value;
-    const customDueDate = $('#custom-due-date').value;
+    const loanWithPercentCustom = $('#loanWithPercentCustom').val();
+    const customDueDate = $('.custom-due-date').val();
     var csrftoken = getCookie('csrftoken');
     
     // Log the values to the console
@@ -245,6 +245,8 @@ submitLoanRequest.addEventListener('click', function() {
             }
         });
     }else{
+        console.log(customDueDate)
+        console.log(loanWithPercentCustom)
         $.ajax({
             type: 'POST',
             url: 'add-loan-custom',

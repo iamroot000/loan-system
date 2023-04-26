@@ -1,5 +1,8 @@
 from django.contrib import admin
 from .models import borrower_table, loan_table, loan_payment, payment_request, staff_manager, loan_manager
+from django.contrib.auth import models as auth_models
+
+admin.site.register(auth_models.Permission, admin.ModelAdmin)
 # Register your models here.
 
 class BorrowerAdmin(admin.ModelAdmin):

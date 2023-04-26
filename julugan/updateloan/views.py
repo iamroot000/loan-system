@@ -58,7 +58,7 @@ def add_loan_custom(request):
         varAmountLoan = int(request.POST.get('loanAmount'))
         varloanType = request.POST.get('paymentMethod')
         varAmountLeft = request.POST.get('loanWithPercentCustom')
-        dueDate = request.POST.get('customDueDate')
+        rawDueDate = request.POST.get('customDueDate')
         #update daysleft after approval
         # varDaysLeft = request.POST.get('numberOfDays')
         varLoanProfit = C.loan_profit(varAmountLoan)
@@ -68,6 +68,9 @@ def add_loan_custom(request):
         plus_current_active_loan = int(borrower_table_obj.active_loans) + 1
         borrower_table_obj.active_loans = plus_current_active_loan
         borrower_table_obj.save()
+        parsed_date = datetime.strptime(rawDueDate, "%m/%d/%Y")
+        dueDate = datetime.strftime(parsed_date, "%Y-%m-%d")
+        print(dueDate)
         loan_table_obj = loan_table(name=varName, loan_type=varloanType, amount_loan=varAmountLoan, amount_left=varAmountLeft, loan_profit=varLoanProfit, staff_profit=varStaffProfit, staff=varUser,due_date=dueDate)
         loan_table_obj.save()
         data = {'status': 'success', 'message': 'Loan Request has been sent'}
