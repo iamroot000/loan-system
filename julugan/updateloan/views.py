@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
-from loanmanager.models import loan_table, borrower_table, loan_payment, payment_request
+from loanmanager.models import loan_table, borrower_table, loan_payment, payment_request, staff, bank
 from .process.control import Manager
 from datetime import datetime
 from django.shortcuts import get_object_or_404
@@ -17,8 +17,8 @@ class IndexView(View):
 
         template = "updateloan/index.html"
 
-        getLoanTableDetails = loan_table.objects.filter(is_approved=True, loan_type='daily')
-        getLoanTableDetailsCustom = loan_table.objects.filter(is_approved=True, loan_type='custom')
+        getLoanTableDetails = loan_table.objects.filter(is_approved=True, loan_type='daily', is_active=True, status="incomplete")
+        getLoanTableDetailsCustom = loan_table.objects.filter(is_approved=True, loan_type='custom', is_active=True, status="incomplete")
         context = {
             'getLoanTableDetails': getLoanTableDetails,
             'getLoanTableDetailsCustom': getLoanTableDetailsCustom,
@@ -46,6 +46,9 @@ def add_loan_daily(request):
         borrower_table_obj.save()
         loan_table_obj = loan_table(name=varName, loan_type=varloanType, amount_loan=varAmountLoan, total_days=varDaysLeft, days_left=varDaysLeft, amount_per_day=varAmountPerDay, amount_left=varAmountLeft, loan_profit=varLoanProfit, staff_profit=varStaffProfit, staff=request.user.username)
         loan_table_obj.save()
+        bank_obj = bank.objects.get(name='ACCOUNT1')
+        bank_obj.available_balance = bank_obj.available_balance - int(varAmountLoan)
+        bank_obj.save()
         print(varUser)
         data = {'status': 'success', 'message': 'Loan Request has been sent'}
     else:
@@ -73,6 +76,9 @@ def add_loan_custom(request):
         print(dueDate)
         loan_table_obj = loan_table(name=varName, loan_type=varloanType, amount_loan=varAmountLoan, amount_left=varAmountLeft, loan_profit=varLoanProfit, staff_profit=varStaffProfit, staff=varUser,due_date=dueDate)
         loan_table_obj.save()
+        bank_obj = bank.objects.get(name='ACCOUNT1')
+        bank_obj.available_balance = bank_obj.available_balance - int(varAmountLoan)
+        bank_obj.save()
         data = {'status': 'success', 'message': 'Loan Request has been sent'}
     else:
         data = {'status': 'error', 'message': 'Invalid request method.'}
@@ -123,3 +129,32 @@ def submit_payment_request(request):
     return JsonResponse(data)
 
 #make an alert method for payment overdue
+    
+def complete_request(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        loan_id = data.get('loan_id')
+        loan_table_obj = loan_table.objects.get(loan_id=loan_id)
+        total_amount = loan_table_obj.amount_left
+        borrower = loan_table_obj.name
+        auditor = request.user.username
+        request_date = datetime.now()
+        payment_request_obj = payment_request(loan_id=loan_id, staff_name=auditor,amount=total_amount, borrower_name=borrower,request_date=request_date, completion=True)
+        payment_request_obj.save()
+        data = {'status': 'success', 'message': 'Loan Request has been sent'}
+    else:
+        data = {'status': 'error', 'message': 'Invalid request method.'}
+    return JsonResponse(data)
+        
+
+def user_profile(request):
+    if request.method == "POST":
+        staff_obj = staff.objects.get(name=request.user.username)
+        balance_profit = staff_obj.balance
+        total_profit = staff_obj.total_profit
+        data = {
+            "balance_profit": balance_profit,
+            "total_profit": total_profit
+        }
+        print(data)
+    return JsonResponse(data)

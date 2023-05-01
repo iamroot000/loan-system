@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import borrower_table, loan_table, loan_payment, payment_request, staff_manager, loan_manager
+from .models import borrower_table, loan_table, loan_payment, payment_request, staff_manager, staff, bank
 from django.contrib.auth import models as auth_models
 
 admin.site.register(auth_models.Permission, admin.ModelAdmin)
@@ -19,6 +19,7 @@ class LoanPaymentAdmin(admin.ModelAdmin):
 admin.site.register(borrower_table, BorrowerAdmin)
 admin.site.register(loan_table, LoanAdmin)
 admin.site.register(loan_payment, LoanPaymentAdmin)
-admin.site.register(loan_manager)
+admin.site.register(staff)
+admin.site.register(bank)
 # admin.site.register(staff_manager)
 admin.site.register(payment_request)

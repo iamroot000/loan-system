@@ -70,17 +70,19 @@ class loan_payment(models.Model):
      isAudit = models.BooleanField(default=False)
      staff = models.CharField(max_length=20, null=True)
 
-class loan_manager(models.Model):
-    total_balance = models.IntegerField(default=0)
-    ongoing = models.IntegerField(default=0)
-    profit = models.IntegerField(default=0)
-    current = models.IntegerField(default=0)
+class staff(models.Model):
+    name = models.CharField(max_length=20, null=True, unique=True)
+    balance = models.IntegerField(default=0)
+    total_profit = models.IntegerField(default=0)
+    def __str__(self):
+        return str(self.name)
 
 class staff_manager(models.Model):
     staff_name = models.CharField(max_length=20, null=True, unique=True)
     amount = models.IntegerField(default=0)
     date_requested = models.DateField(null=True)
     date_approved = models.DateField(null=True)
+    
 
 class payment_request(models.Model):
     request_number = models.IntegerField(unique=True, editable=False, null=True)
@@ -92,6 +94,7 @@ class payment_request(models.Model):
     loan_id = models.IntegerField(null=True)
     request_date = models.DateField(null=True)
     is_approved = models.BooleanField(default=False)
+    completion = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
             if not self.pk:
@@ -103,7 +106,10 @@ class payment_request(models.Model):
             super().save(*args, **kwargs)
 
 class bank(models.Model):
-     total_balance = models.IntegerField(null=True)
-     active_loans = models.IntegerField(null=True)
-     available_balance = models.IntegerField(null=True)
-     active_borrowers = models.IntegerField(null=True)
+    name = models.CharField(max_length=20, null=True, unique=True)
+    earnings = models.IntegerField(null=True, default=0)
+    available_balance = models.IntegerField(null=True,  default=0)
+    active_amount = models.IntegerField(null=True,  default=0)
+    
+    def __str__(self):
+        return str(self.name)

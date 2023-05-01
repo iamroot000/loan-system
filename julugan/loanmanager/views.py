@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
-from loanmanager.models import loan_table, loan_payment, payment_request
+from loanmanager.models import loan_table, loan_payment, payment_request, bank, staff
 from datetime import datetime, timedelta
 from django.shortcuts import get_object_or_404
 
@@ -55,25 +55,52 @@ def approve_payment(request):
     if request.method == 'POST':
         payment_request_number = request.POST.get('paymentRequestNumber')
         payment_request_obj = payment_request.objects.get(request_number=payment_request_number)
-        request_dates = payment_request_obj.dates_request
-        list_request_dates = eval(request_dates)
-        loan_id = payment_request_obj.loan_id
-        auditor = payment_request_obj.staff_name
-        for request_date in list_request_dates:
-            loan_payment_obj = loan_payment.objects.get(loan_id__loan_id=loan_id, dates_to_pay=request_date)
-            loan_payment_obj.isAudit = True
-            loan_payment_obj.paid = True
-            loan_payment_obj.staff = auditor
-            loan_payment_obj.save()
+        bank_obj = bank.objects.get(name="ACCOUNT1")
+        if payment_request_obj.completion:
+            loan_id = payment_request_obj.loan_id
             payment_request_obj.is_approved = True
             payment_request_obj.save()
-        loan_table_obj = get_object_or_404(loan_table, loan_id=loan_id)
-        amount = payment_request_obj.amount
-        loan_table_obj.paid_amount = loan_table_obj.paid_amount + int(amount)
-        loan_table_obj.amount_left = loan_table_obj.amount_left - int(amount)
-        loan_table_obj.paid_days = loan_table_obj.paid_days + len(list_request_dates)
-        loan_table_obj.days_left = loan_table_obj.days_left - len(list_request_dates)
-        loan_table_obj.save()
-        
-        data = {'status': 'success', 'message': 'Payment Audited'}
+            loan_table_obj = get_object_or_404(loan_table, loan_id=loan_id)
+            amount = payment_request_obj.amount
+            loan_table_obj.paid_amount = loan_table_obj.paid_amount + int(amount)
+            loan_table_obj.amount_left = loan_table_obj.amount_left - int(amount)
+            total_minus_staff = amount - loan_table_obj.staff_profit
+            bank_obj.available_balance = bank_obj.available_balance + int(total_minus_staff)
+            bank_obj.earnings = loan_table_obj.loan_profit
+            loan_table_obj.is_active = False
+            loan_table_obj.status = 100
+            loan_table_obj.status = "complete"
+            bank_obj.save()
+            loan_table_obj.save()
+            staff_obj = staff.objects.get(name=request.user.username)
+            staff_obj.balance = loan_table_obj.staff_profit
+            staff_obj.total_profit = loan_table_obj.staff_profit
+            staff_obj.save()
+            data = {'status': 'success', 'message': 'Payment Audited'}
+        else:
+            request_dates = payment_request_obj.dates_request
+            list_request_dates = eval(request_dates)
+            loan_id = payment_request_obj.loan_id
+            auditor = payment_request_obj.staff_name
+            for request_date in list_request_dates:
+                loan_payment_obj = loan_payment.objects.get(loan_id__loan_id=loan_id, dates_to_pay=request_date)
+                loan_payment_obj.isAudit = True
+                loan_payment_obj.paid = True
+                loan_payment_obj.staff = auditor
+                loan_payment_obj.save()
+                payment_request_obj.is_approved = True
+                payment_request_obj.save()
+            loan_table_obj = get_object_or_404(loan_table, loan_id=loan_id)
+            amount = payment_request_obj.amount
+            loan_table_obj.paid_amount = loan_table_obj.paid_amount + int(amount)
+            loan_table_obj.amount_left = loan_table_obj.amount_left - int(amount)
+            loan_table_obj.paid_days = loan_table_obj.paid_days + len(list_request_dates)
+            loan_table_obj.days_left = loan_table_obj.days_left - len(list_request_dates)
+            bank_obj.available_balance = bank_obj.available_balance + int(amount)
+            bank_obj.save()
+            loan_table_obj.save()
+            
+            data = {'status': 'success', 'message': 'Payment Audited'}
         return JsonResponse(data)
+    
+

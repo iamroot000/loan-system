@@ -5,6 +5,7 @@ const loanWithPercent = document.getElementById("loanWithPercent");
 const amountPerDay = document.getElementById("amountPerDay");
 const updatePayment = document.getElementById("updatePayment");
 const loanWithPercentCustom = document.getElementById("loanWithPercentCustom");
+const completeRequest = document.getElementById("completeRequest");
 
 const const_payment_col_1 = document.getElementById("payment_col_1");
 for (let i = 1; i < 13; i++) {
@@ -39,7 +40,6 @@ loanLinks.forEach(function(link) {
     link.addEventListener('click', function(event) {
         event.preventDefault(); // prevent the default link behavior
         var loanValue = this.getAttribute('data-value');
-        console.log(loanValue); // replace this with your code to display the value
         var loanDetailsModalTitle = document.getElementById("loanDetailsModalTitle");
         var loan_details_borrower = document.getElementById("loan_details_borrower");
         var loan_details_amount_loan = document.getElementById("loan_details_amount_loan");
@@ -58,7 +58,6 @@ loanLinks.forEach(function(link) {
             type: 'GET',
             url: 'get-borrower-details/' + loanValue,
             success:  function(response){
-                console.log(response)
                 var var_payments_list = response.payments
                 var var_details = response.details
                 
@@ -74,7 +73,7 @@ loanLinks.forEach(function(link) {
                     var varName = detail.name;
                     var varPaidAmount = detail.paid_amount;
                     var varPaidDays = detail.paid_days;
-                    var varProgress = detail.progress;
+                    var varStaff = detail.staff;
                     var varStartDate = detail.start_date;
                     var varTotalDays = detail.total_days;
                     
@@ -85,9 +84,8 @@ loanLinks.forEach(function(link) {
                     loan_details_due_date.innerHTML = varDueDate;
                     loan_details_total_days.innerHTML = varTotalDays;
                     loan_details_amount_per_day.innerHTML = varAmountPerDay;
-                    loan_details_progress.innerHTML = "<div class='progress-bar bg-warning' role='progressbar' style='width: " + varProgress + "%' aria-valuenow='" + varProgress + "' aria-valuemin='0' aria-valuemax='100'></div>";
+                    loan_details_progress.innerHTML = varStaff;
                     loan_details_amount_paid.innerHTML = varPaidAmount;
-                    console.log(varPaidAmount);
                     loan_details_total_profit.innerHTML = varTotalProfit;
                     loan_details_paid_days.innerHTML = varPaidDays;
                     loan_details_days_left.innerHTML = varDaysLeft;
@@ -98,8 +96,6 @@ loanLinks.forEach(function(link) {
                     var var_options_radios = document.getElementById("optionsRadios" + counter_payment);
                     // var_options_radios_label.insertAdjacentElement("afterend", "test");
                     var var_payment_check_box = document.getElementById("paymentCheckBox"+counter_payment);
-                    console.log(element)
-                    // console.log(element.dates_to_pay);
                     var_payment_check_box.hidden=false;
                     var_options_radios.value = element.dates_to_pay;
                     // var var_options_radios_label = document.getElementById("optionsRadios" + counter_payment).parentNode;
@@ -220,11 +216,6 @@ submitLoanRequest.addEventListener('click', function() {
     const customDueDate = $('.custom-due-date').val();
     var csrftoken = getCookie('csrftoken');
     
-    // Log the values to the console
-    console.log(borrowerName);
-    console.log(loanAmount);
-    console.log(paymentMethod);
-
     if(paymentMethod.checked){
         $.ajax({
             type: 'POST',
@@ -245,8 +236,6 @@ submitLoanRequest.addEventListener('click', function() {
             }
         });
     }else{
-        console.log(customDueDate)
-        console.log(loanWithPercentCustom)
         $.ajax({
             type: 'POST',
             url: 'add-loan-custom',
@@ -285,10 +274,6 @@ updatePayment.addEventListener('click', function(){
             checkedBoxes.push(checkbox.value);
         }
     }
-    console.log(amountPerDay);
-    console.log(borrower);
-    console.log(loanId);
-    console.log(checkedBoxes);
     $.ajax({
         type: 'POST',
         url: 'submit-payment-request',
@@ -304,6 +289,25 @@ updatePayment.addEventListener('click', function(){
         success: function(response){
             location.reload();
             // console.log(response)
+        }
+    });
+
+});
+
+completeRequest.addEventListener('click', function(){
+    const loanId = document.querySelector('#loanDetailsModalTitle').textContent.split(': ')[1];
+    var csrftoken = getCookie('csrftoken');
+    $.ajax({
+        type: 'POST',
+        url: 'complete-payment',
+        headers: {
+            'X-CSRFToken': csrftoken
+        },
+        data: JSON.stringify({
+            'loan_id': loanId,
+        }),
+        success: function(response){
+            location.reload();
         }
     });
 

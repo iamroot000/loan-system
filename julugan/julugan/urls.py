@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include, re_path
+from updateloan.views import user_profile
 
 urlpatterns = [
     path('', include('dashboard.urls')),
@@ -22,4 +23,5 @@ urlpatterns = [
     path('login/', include('login.urls')),
     path('update-loan/', include('updateloan.urls')),
     path('loan-manager/', include('loanmanager.urls')),
+    path('user-profile', user_profile, name='user-profile'),
 ]
